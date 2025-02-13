@@ -1,4 +1,6 @@
 *** Practical - 1*** (SQL)
+Aim : Perform DDL,DML and TCL queries in any RDBMS
+
 create database customers;
 
 USE customers;
@@ -164,6 +166,9 @@ MODIFY Address VARCHAR(50);
 
 
 *** Practical - 3 *** (MongoDB)
+Aim : Create a document and collection in MongoDB, performing advanced queries with 
+conditional operators and aggregate functions 
+
 use Library;
 db.createCollection("book");
 show dbs;
@@ -242,6 +247,8 @@ db.book.find({ "Book_Details_Info.cost": { $gt:500}});
 
 
 *** Practical - 4 *** (MongoDB)
+Aim : Perform aggregation using Map() and Reduce() function in MongoDB 
+
 db.getCollection("restaurants").find({})
 db.restaurants.find({},{"_id":0,"name":1,"borough":1,"cuisine":1});
 db.restaurants.find({'borough':'Manhattan','cuisine':'chinese'}, {"name":1,"borough":1,"cuisine":1});
@@ -276,6 +283,8 @@ db.restaurants.aggregate([
 
 
 *** Practical - 5 *** (Hadoop)
+Aim : Hadoop shell commands
+
 1. Start Hadoop Name node and data node
 start-dfs.sh
 start-datanode.sh
