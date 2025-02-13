@@ -77,6 +77,7 @@ delete from tickets;
 select * from tickets;
 
 
+
 *** Practical - 2 *** (SQL)
 create database hospital;
 use hospital;
@@ -163,6 +164,7 @@ DROP COLUMN Specialization;
 
 ALTER TABLE Patient
 MODIFY Address VARCHAR(50);
+
 
 
 *** Practical - 3 *** (MongoDB)
@@ -282,6 +284,7 @@ db.restaurants.aggregate([
 ])
 
 
+
 *** Practical - 5 *** (Hadoop)
 Aim : Hadoop shell commands
 
@@ -351,8 +354,153 @@ hdfs dfs -rm -r -skipTrash /.Trash/Current
 hdfs dfs -du -h /
 
 
-*** Practical - 10 *** (Neo4J)
 
+*** Practical - 6*** (Hadoop)
+Aim : Pig wordcount with Mapreduce
+
+C:\Windows\System32>hadoop fs -put /C:/Never_stop.txt/
+grunt> line_list = LOAD ‘/Never_stop.txt’ USING TextLoader() AS (line: chararray);
+grunt> word_list= foreach line_list generate FLATTEN(TOKENIZE(line)) as word;
+grunt> word_gr= group word_list by word;
+grunt> word_count= foreach word_gr generate group,COUNT(word_list);
+grunt> dump word_count;
+
+
+
+*** Practical - 7***(Hadoop)
+Aim: Word wrangling with PIG
+
+C:\Windows\System32>start-dfs.cmd
+C:\Windows\System32>start-yarn.cmd
+Hadoop fs -put /c:/bank_csv.csv /BIGDATA-23127/bank_csv.csv
+Grunt> BankData = LOAD ‘c:/bank_csv.csv’ USING PigStorage(‘,’)
+grunt>DESCRIBE BankData
+grunt> columns = foreach BankData generate age, job, marital, education;
+grunt> dump columns
+grunt> top10 = limit BankData 10;
+grunt> dump top10;
+grunt> married_customers = filter BankData by marital == ‘married’;
+grunt> data = foreach married_customers generate age, job, balance, loan;
+grunt> dump data;
+grunt> AvgBalanceByEducation = GROUP BankData BY education;
+grunt> AvgBalance = FOREACH AvgBalanceByEducation GENERATE group, AVG(BankData.balance);
+grunt> DUMP AvgBalance;
+grunt> LoanTaken = FILTER BankData BY loan == ‘yes’;
+grunt> GroupByMaritalStatus = GROUP LoanTaken BY marital;
+grunt> LoanCountByMaritalStatus = FOREACH GroupByMaritalStatus GENERATE group, COUNT(LoadnTaken);
+grunt> DUMP LoanCountByMaritalStatus;
+grunt> Defaulters = FILTER BankData BY default == ‘yes’;
+grunt> NonDefaulters = FILTER BankData BY default == ‘no’
+grunt> GroupedDefaulters = GROUP Defaulters ALL;
+grunt> GroupedNonDefaulters = GROUP NonDefaulters ALL;
+grunt> DefaulterCount = FOREACH GroupedDefaulters GENERATE COUNT(Defaulters);
+grunt> NonDefaulterCount = FOREACH GroupedNonDefaulters GENERATE COUNT (NonDefaulters);
+grunt> DUMP DefaulterCount;
+grunt> LongDurationLoans = FILTER BankData BY duration > 1000;
+grunt> DUMP LongDUrationLoans;
+
+
+
+*** Practical - 8 *** (Hive)
+Aim: Hive table
+
+#(Create a managed table in Hive (lecture)
+Load the data from a text file 
+View the records of the file
+View the metadata
+Create the external table in Hive (teacher)
+Load the data from HDFS text file into the external table
+View the tables from localhost:50070 Hadoop web UI
+Delete the external table.)
+
+start-dfs.cmd
+
+start-yarn.cmd
+
+startnetworkserver -h.0.0.0.0
+
+hive
+
+hive> create table Lecture(
+Room int,
+Da_te varchar(20),
+Time varchar(20),
+Course varchar(20),
+T_ID varchar(20),
+row format delimited
+fields terminated by’,’;
+
+hive> LOAD DATA LOCAL INPATH ‘C:\\Lecture.txt’ INTO TABLE Lecture;
+
+hive> select * from Lecture;
+
+hive> describe Lecture;
+
+hive> create external table teacher(T_ID_PK varchar(20),
+T_Name varchar(20),
+T_Dept varchar(20),
+T_Exp int,
+T_Highest_Degree varchar(20))
+row format delimited
+fields terminated by ‘,’;
+
+hive> load data inpath
+‘hdfs://localhost:9000/teacher.txt’
+Into table teacher;
+hive> drop table teacher;
+
+
+*** Practical - 9 ***(HBASE)
+Aim: HBASE
+
+1)	Create a namespace order
+create_namespace 'order'
+
+2)	create the following "customer" table inside the "order" namespace
+create 'order:customer',
+hbase(main):014:0* {NAME => 'Customers', VERSIONS => 1},
+hbase(main):015:0* {NAME => 'Product', VERSIONS => 1}
+
+3)	Insert the following records
+put 'order:customer', 'C01', 'Customers:Customer_name', 'Sam Singh'
+put 'order:customer', 'C01', 'Customers:City', 'Bangalore'
+put 'order:customer', 'C01', 'Product:Product_name', 'Mike'
+put 'order:customer', 'C01', 'Product:Price', '500'
+put 'order:customer', 'C02', 'Customers:Customer_name', 'Arijit Chauhan'
+put 'order:customer', 'C02', 'Customers:City', 'Goa'
+put 'order:customer', 'C02', 'Product:Product_name', 'Speakers'
+put 'order:customer', 'C02', 'Product:Price', '1500'
+put 'order:customer', 'C03', 'Customers:Customer_name', 'Rajesh Sinha'
+put 'order:customer', 'C03', 'Customers:City', 'Mumbai'
+put 'order:customer', 'C03', 'Product:Product_name', 'Pen Drive'
+put 'order:customer', 'C03', 'Product:Price', '1000'
+put 'order:customer', 'C04', 'Customers:Customer_name', 'Rupesh Mahanti'
+put 'order:customer', 'C04', 'Customers:City', 'Goa'
+put 'order:customer', 'C04', 'Product:Product_name', 'Mouse'
+put 'order:customer', 'C04', 'Product:Price', '3500'
+
+4)	Print all the records
+scan 'order:customer'
+
+5)	print only the customer_name and city
+scan 'order:customer', {COLUMNS => ['Customers:Customer_name', 'Customers:City']}
+
+6)	print the first 2 records
+scan 'order:customer', {LIMIT => 2}
+
+7)	Print the names of the products where price is greater than 1000.
+import org.apache.hadoop.hbase.filter.SingleColumnValueFilter
+scan 'order:customer',{FILTER=>"SingleColumnValueFilter('Product','Price',>,'binary:1000')"}
+
+8)	Print the row 2nd and 3rd
+scan ‘order:customer’, {STARROW => ‘C02’, STOPROW => ‘C04’}
+
+9)	Count the total rows in the table.
+count ‘order:customer’
+
+
+
+*** Practical - 10 *** (Neo4J)
 Aim: Creating nodes and relationships in graph database using cypher. Perform exploration 
 queries
 
