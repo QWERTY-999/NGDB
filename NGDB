@@ -343,6 +343,10 @@ hdfs dfs -du -h /
 
 
 *** Practical - 10 *** (Neo4J)
+
+Aim: Creating nodes and relationships in graph database using cypher. Perform exploration 
+queries
+
 #Step 1: Import the data into Neo4j
 
 CREATE (:Product {pid: 'p01', pname: 'soap', comp_name: 'lux', cost: 20}),
