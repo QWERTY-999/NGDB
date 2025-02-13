@@ -248,6 +248,7 @@ db.book.updateOne(
 db.book.find({ "Book_Details_Info.cost": { $gt:500}});
 
 
+
 *** Practical - 4 *** (MongoDB)
 Aim : Perform aggregation using Map() and Reduce() function in MongoDB 
 
