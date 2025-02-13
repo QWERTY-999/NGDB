@@ -1,0 +1,403 @@
+*** Practical - 1*** (SQL)
+create database customers;
+
+USE customers;
+
+CREATE TABLE CUSTOMERS (
+    CustId VARCHAR(50) PRIMARY KEY,
+    Name VARCHAR(50) NOT NULL,
+    Contact_no VARCHAR(10) NOT NULL
+);
+
+CREATE TABLE MOVIE (
+    MovieID VARCHAR(50) PRIMARY KEY,
+    Name VARCHAR(50) NOT NULL,
+    ActorName VARCHAR(50),
+    ActressName VARCHAR(50),
+    DirectorName VARCHAR(50),
+    ReleaseDate DATE,
+    CountryName VARCHAR(50),
+    Price DECIMAL(9,2)
+);
+
+CREATE TABLE SCREEN (
+    ScreenID VARCHAR(50) PRIMARY KEY,
+    Name VARCHAR(50),
+    MovieID VARCHAR(50),
+    Capacity INT,
+    FOREIGN KEY (MovieID) REFERENCES MOVIE(MovieID)
+);
+
+CREATE TABLE TICKETS (
+    TicketID VARCHAR(50) PRIMARY KEY,
+    MovieID VARCHAR(50),
+    ScreenID VARCHAR(50),
+    Date DATE,
+    Price DECIMAL(9,2),
+    FOREIGN KEY (MovieID) REFERENCES MOVIE(MovieID),
+    FOREIGN KEY (ScreenID) REFERENCES SCREEN(ScreenID)
+);
+
+INSERT INTO CUSTOMERS (CustId, Name, Contact_no) 
+VALUES ('C001', 'Yash', '9876543210'),
+       ('C002', 'Varad', '9123456780'),
+       ('C003', 'Varshil', '9012345678'),
+       ('C004', 'Vikrant', '8901234567'),
+       ('C005', 'Prasad', '8765432109');
+
+INSERT INTO MOVIE (MovieID, Name, ActorName, ActressName, DirectorName, ReleaseDate, CountryName, Price) 
+VALUES ('M001', 'Inception', 'Leonardo DiCaprio', 'Elliot Page', 'Christopher Nolan', '2010-07-16', 'USA', 15.50),
+       ('M002', 'Avatar', 'Sam Worthington', 'Zoe Saldana', 'James Cameron', '2009-12-18', 'USA', 20.00),
+       ('M003', 'Titanic', 'Leonardo DiCaprio', 'Kate Winslet', 'James Cameron', '1997-12-19', 'USA', 12.00),
+       ('M004', 'The Matrix', 'Keanu Reeves', 'Carrie-Anne Moss', 'Wachowskis', '1999-03-31', 'USA', 18.00),
+       ('M005', 'Interstellar', 'Matthew McConaughey', 'Anne Hathaway', 'Christopher Nolan', '2014-11-07', 'USA', 22.00);
+
+INSERT INTO SCREEN (ScreenID, Name, MovieID, Capacity) 
+VALUES ('S001', 'Screen 1', 'M001', 150),
+       ('S002', 'Screen 2', 'M002', 200),
+       ('S003', 'Screen 3', 'M003', 120),
+       ('S004', 'Screen 4', 'M004', 180),
+       ('S005', 'Screen 5', 'M005', 250);
+
+INSERT INTO TICKETS (TicketID, MovieID, ScreenID, Date, Price) 
+VALUES ('T001', 'M001', 'S001', '2024-11-19', 15.50),
+       ('T002', 'M002', 'S002', '2024-11-19', 20.00),
+       ('T003', 'M003', 'S003', '2024-11-20', 12.00),
+       ('T004', 'M004', 'S004', '2024-11-20', 18.00),
+       ('T005', 'M005', 'S005', '2024-11-21', 22.00);
+
+select * from movie;
+select * from customers;
+select * from screen;
+select * from tickets;
+
+delete from tickets;
+select * from tickets;
+
+
+*** Practical - 2 *** (SQL)
+create database hospital;
+use hospital;
+CREATE TABLE Patient (
+    Patient_id varchar(10) PRIMARY KEY,
+    Patient_name VARCHAR(30),
+    Address VARCHAR(30),
+    Age INT,
+    Ailment VARCHAR(20)
+);
+CREATE TABLE Doctor (
+    Doc_id varchar(10) PRIMARY KEY,
+    Doc_name VARCHAR(30),
+    Specialization VARCHAR(30),
+    Qualification VARCHAR(10)
+);
+CREATE TABLE Admit (
+    BedNo varchar(5),
+    Patient_id VARCHAR(10),
+    Doc_id VARCHAR(10),
+    Disease VARCHAR(50),
+    Dt_of_admit DATE,
+    Dt_of_discharge DATE,
+    FOREIGN KEY (Patient_id) REFERENCES Patient(Patient_id),
+    FOREIGN KEY (Doc_id) REFERENCES Doctor(Doc_id)
+    );
+    
+INSERT INTO Patient (Patient_id, Patient_name, Address, Age, Ailment) 
+VALUES 
+('P01', 'Santosh', 'Mumbai', 67, 'Heart attack'),
+('P02', 'Rohini', 'Bangalore', 65, 'Stroke'),
+('P03', 'Tilak', 'Mumbai', 54, 'Backache'),
+('P04', 'Rohini', 'Chennai', 34, 'Stomach ache'),
+('P05', 'Riddhi', 'Mumbai', 25, 'Fever');
+INSERT INTO Doctor (Doc_id, Doc_name, Specialization, Qualification) 
+VALUES 
+('D01', 'Ragini', 'Cardiac', 'MD'),
+('D02', 'Rishav', 'Gynaecology', 'MD'),
+('D03', 'Somnath', 'Cardiac', 'MD'),
+('D04', 'Raghav', 'General', 'MD'),
+('D05', 'Royston', 'General', 'MBBS');
+INSERT INTO Admit (BedNo, Patient_id, Doc_id, Disease, Dt_of_admit, Dt_of_discharge) 
+VALUES 
+('B01', 'P01', 'D01', 'Heart related', '2023-01-22', '2023-01-25'),
+('B02', 'P02', 'D01', 'Heart related', '2024-02-11', '2024-03-12'),
+('B03', 'P05', 'D05', 'Dengue', '2024-03-15', '2024-03-22');
+
+SELECT Patient_name
+FROM Patient
+JOIN Admit ON Patient.Patient_id = Admit.Patient_id
+JOIN Doctor ON Admit.Doc_id = Doctor.Doc_id
+WHERE Doctor.Doc_name = 'Ragini';
+
+SELECT * 
+FROM Admit 
+WHERE DATEDIFF(Dt_of_discharge, Dt_of_admit) > 10;
+
+SELECT Patient_name 
+FROM Patient
+WHERE Patient_id NOT IN (SELECT Patient_id FROM Admit);
+
+SELECT * 
+FROM Doctor
+WHERE Specialization = 'General';
+
+SELECT Doctor.*
+FROM Doctor
+JOIN Admit ON Doctor.Doc_id = Admit.Doc_id
+JOIN Patient ON Patient.Patient_id = Admit.Patient_id
+WHERE Patient.Patient_name = 'Riddhi';
+
+UPDATE Admit
+SET Dt_of_discharge = '2023-01-26'
+WHERE Patient_id = 'P01';
+
+ALTER TABLE Patient
+RENAME COLUMN Ailment TO Symptoms;
+
+DELETE FROM Patient
+WHERE Patient_id NOT IN (SELECT Patient_id FROM Admit);
+
+ALTER TABLE Doctor
+DROP COLUMN Specialization;
+
+ALTER TABLE Patient
+MODIFY Address VARCHAR(50);
+
+
+*** Practical - 3 *** (MongoDB)
+use Library;
+db.createCollection("book");
+show dbs;
+db.book.insertMany([
+    {
+        Title: "Programming with Java",
+        Status_Info: [{ Accession_No: "BS001", Status: "ISSUED" }, { Accession_No: "BS002", Status: "AVAIL" }],
+        Book_Details_Info: { Author: "E Balaguruswamy", Cost: 350, Publisher_Name: "TMH" }
+    },
+    {
+        Title: "ASP.NET 3.5 VB 2008",
+        Status_Info: [{ Accession_No: "BS002", Status: "AVAIL" }],
+        Book_Details_Info: { Author: "Anne Boehm", Cost: 650, Publisher_Name: "Murach" }
+    },
+    {
+        Title: "Programming in VB",
+        Status_Info: [{ Accession_No: "BS003", Status: "ISSUED" }],
+        Book_Details_Info: { Author: "Julia Case Bradley", Cost: 600, Publisher_Name: "TMH" }
+    },
+    {
+        Title: "Database System Concepts",
+        Status_Info: [{ Accession_No: "BS004", Status: "ISSUED" }, { Accession_No: "BS006", Status: "ISSUED" }, { Accession_No: "BS007", Status: "ISSUED" }, { Accession_No: "BS008", Status: "ISSUED" }, { Accession_No: "BS009", Status: "AVAIL" }, { Accession_No: "BS010", Status: "AVAIL" }],
+        Book_Details_Info: { Author: "Korth Sudarshan", Cost: 500, Publisher_Name: "TMH" }
+    },
+    {
+        Title: "Distributed Systems",
+        Status_Info: [
+            { Accession_No: "BS005", Status: "AVAIL" },
+        ],
+        Book_Details_Info: { Author: "Andrew S Tanenbaum", Cost: 350, Publisher_Name: "Pearson" }
+    },
+    {
+        Title: "Let Us C",
+        Status_Info: [
+            { Accession_No: "BS006", Status: "ISSUED" },
+            { Accession_No: "BS007", Status: "ISSUED" },
+            { Accession_No: "BS008", Status: "ISSUED" },
+            { Accession_No: "BS009", Status: "AVAIL" },
+            { Accession_No: "BS010", Status: "AVAIL" },
+            { Accession_No: "BS011", Status: "AVAIL" },
+            { Accession_No: "BS012", Status: "AVAIL" },
+            { Accession_No: "BS013", Status: "AVAIL" },
+            { Accession_No: "BS013", Status: "AVAIL" },
+        ],
+        Book_Details_Info: { Author: "Kanetkar Yashavant P.", Cost: 600, Publisher_Name: "B.P.B." }
+    },
+    {
+        Title: "Modern Digital Electronics",
+        Status_Info: [{ Accession_No: "BS015", Status: "ISSUED" },
+                      { Accession_No: "BS016", Status: "AVAIL" }
+        ],
+        Book_Details_Info: { Author: "Jain R.P.", Cost: 650, Publisher_Name: "TMH" }
+    },
+    {
+        Title: "Computer Organization & Architecture",
+        Status_Info: [
+            { Accession_No: "BS017", Status: "ISSUED" },
+            { Accession_No: "BS018", Status: "AVAIL" },
+            { Accession_No: "BS019", Status: "AVAIL" },
+            { Accession_No: "BS020", Status: "AVAIL" },
+        ],
+        Book_Details_Info: { Author: "Stallings William", Cost: 600, Publisher_Name: "Dorling Kindersley" }
+    }
+]);
+
+db.book.find().pretty();
+
+db.book.find({ Author: "E Balaguruswamy" }, { Title: 1, _id: 0 });
+
+db.book.updateOne(
+    { Title: "Digital Electronics" },
+    { $set: { Title: "Ramakrishna" } }
+);
+
+db.book.find({ "Book_Details_Info.cost": { $gt:500}});
+
+
+*** Practical - 4 *** (MongoDB)
+db.getCollection("restaurants").find({})
+db.restaurants.find({},{"_id":0,"name":1,"borough":1,"cuisine":1});
+db.restaurants.find({'borough':'Manhattan','cuisine':'chinese'}, {"name":1,"borough":1,"cuisine":1});
+db.restaurants.find( {
+
+"cuisine" : {$ne : " American "},
+
+"grades.grade" :"A",
+
+"borough": {$ne : "Brooklyn"}
+
+}
+
+).sort({"cuisine":-1});
+db.restaurant.find({"name":/^food/},{"name":1,"restaurant_id":1,"borough":1,"cuisine":1});
+db.restaurants.aggregate([
+    {
+        $group: {
+            _id: "$cuisine",
+            avgScore: { $avg: "$score" }
+        }
+    }
+])
+db.restaurants.aggregate([
+    {
+        $group: {
+            _id: "$borough",
+            maxScore: { $max: "$score" }
+        }
+    }
+])
+
+
+*** Practical - 5 *** (Hadoop)
+1. Start Hadoop Name node and data node
+start-dfs.sh
+start-datanode.sh
+
+2. Print your Hadoop version.
+hadoop version
+
+3. Print the nodes which are running.
+jps
+
+4. View the list of directories and files in Hadoop home
+hdfs dfs -ls /
+
+5. Create a directory BIGDATA-rollno with your roll no in HDFS
+hdfs dfs -mkdir /BIGDATA-your_roll_no
+
+6. View the Hadoop home directory on Web UI
+
+7. Create a sub directory MYROLL-ROLLNO under BIGDATA-rollno
+hdfs dfs -mkdir /BIGDATA-your_roll_no/MYROLL-your_roll_no
+
+8. Create an empty file PRACTICAL-rollno.txt with your roll no
+hdfs dfs -touchz /BIGDATA-your_roll_no/PRACTICAL-your_roll_no.txt
+
+9. to view the subfolders and files in Bigdata directory
+hdfs dfs -ls /BIGDATA-your_roll_no
+
+10. create an empty file practical-roll.txt
+hdfs dfs -touchz /practical-roll.txt
+
+11. how to view the content of a file in Hadoop
+hdfs dfs -cat /BIGDATA-your_roll_no/PRACTICAL-your_roll_no.txt
+
+12. To append the content to an empty file in Hadoop from local file system
+“tips.csv”.
+hdfs dfs -appendToFile tips.csv /BIGDATA-your_roll_no/PRACTICAL-your_roll_no.txt
+
+13. To copy a file “bank.csv” from local file system to HDFS
+hdfs dfs -put bank.csv /
+
+14. To copy a file “ptactical-roll.txt” from HDFS to local file system
+hdfs dfs -get /practical-roll.txt local_path
+
+15. Create two folders “folder_1” and “folder_2”
+hdfs dfs -mkdir /folder_1
+hdfs dfs -mkdir /folder_2
+
+16. Copy the file “practical_roll.txt” to folder_1.
+hdfs dfs -mv /practical-roll.txt /folder_1/
+
+17. Move the file to folder_2
+hdfs dfs -mv /folder_1/practical-roll.txt /folder_2/
+
+18. Delete the file in folder_1 without sending to trash
+hdfs dfs -rm -skipTrash /folder_1/practical-roll.txt
+
+19. Remove the directory folder_1
+hdfs dfs -rm -r /folder_1
+
+20. Empty trash
+hdfs dfs -rm -r -skipTrash /.Trash/Current
+
+21. Print the size of the files in KB and MB of Hadoop home directory
+hdfs dfs -du -h /
+
+
+*** Practical - 10 *** (Neo4J)
+#Step 1: Import the data into Neo4j
+
+CREATE (:Product {pid: 'p01', pname: 'soap', comp_name: 'lux', cost: 20}),
+       (:Product {pid: 'p02', pname: 'shampoo', comp_name: 'pantene', cost: 50}),
+       (:Product {pid: 'p03', pname: 'toothpaste', comp_name: 'colgate', cost: 100});
+
+#Order Table (Nodes with Order label and relationships ORDERED):
+
+CREATE (:Order {orderid: 'ord1', qty: 5})-[:ORDERED]->(:Product {pid: 'p01'}),
+       (:Order {orderid: 'ord2', qty: 2})-[:ORDERED]->(:Product {pid: 'p01'}),
+       (:Order {orderid: 'ord3', qty: 2})-[:ORDERED]->(:Product {pid: 'p02'}),
+       (:Order {orderid: 'ord4', qty: 1})-[:ORDERED]->(:Product {pid: 'p01'}),
+       (:Order {orderid: 'ord5', qty: 2})-[:ORDERED]->(:Product {pid: 'p02'}),
+       (:Order {orderid: 'ord6', qty: 5})-[:ORDERED]->(:Product {pid: 'p04'}),
+       (:Order {orderid: 'ord7', qty: 2})-[:ORDERED]->(:Product {pid: 'p05'});
+
+
+#Step 2: Cypher Queries
+
+MATCH (p:Product)
+RETURN p.pname AS Name, p.cost AS Unit_Price;
+
+MATCH (p:Product)
+WHERE p.cost >= 50
+RETURN p.pname AS Name;
+
+MATCH (o:Order)-[:ORDERED]->(p:Product)
+RETURN p.pname AS Product_Name, o.orderid AS Order_ID, o.qty AS Quantity;
+
+MATCH (p:Product)
+RETURN p.comp_name AS Category, COUNT(p) AS Total_Items;
+
+MATCH (p:Product)-[:ORDERED]-(o:Order)
+WHERE p.comp_name = 'entertainment'
+RETURN AVG(o.qty) AS Average_Quantity;
+
+
+
+#Step 3: Add a category property to the Product nodes
+
+MATCH (p:Product {pid: 'p01'})
+SET p.category = 'personal_care';
+
+MATCH (p:Product {pid: 'p02'})
+SET p.category = 'personal_care';
+
+MATCH (p:Product {pid: 'p03'})
+SET p.category = 'personal_care';
+
+CREATE (:Product {pid: 'p04', pname: 'movie_ticket', comp_name: 'entertainment', cost: 200, category: 'entertainment'}),
+       (:Product {pid: 'p05', pname: 'concert_ticket', comp_name: 'entertainment', cost: 500, category: 'entertainment'});
+
+
+#Step 4: Query for "entertainment" category
+
+MATCH (p:Product)-[:ORDERED]-(o:Order)
+WHERE p.category = 'entertainment'
+RETURN AVG(o.qty) AS Average_Quantity;
