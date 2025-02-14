@@ -373,7 +373,9 @@ hdfs dfs -du -h /
 *** Practical - 6*** (Hadoop)
 Aim : Pig wordcount with Mapreduce
 
-C:\Windows\System32>hadoop fs -put /C:/Never_stop.txt/
+C:\Windows\System32>hadoop dfs -put /C:/Never_stop.txt/
+hdfs dfs -ls /
+pig -x local
 grunt> line_list = LOAD ‘/Never_stop.txt’ USING TextLoader() AS (line: chararray);
 grunt> word_list= foreach line_list generate FLATTEN(TOKENIZE(line)) as word;
 grunt> word_gr= group word_list by word;
