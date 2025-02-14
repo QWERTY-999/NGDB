@@ -475,6 +475,11 @@ hive> drop table teacher;
 *** Practical - 9 ***(HBASE)
 Aim: HBASE
 
+start-hbase.cmd
+hbase version
+jps
+hbase shell
+list
 1)	Create a namespace order
 create_namespace 'order'
 
