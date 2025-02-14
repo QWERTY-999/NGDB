@@ -78,6 +78,8 @@ select * from tickets;
 
 
 
+
+
 *** Practical - 2 *** (SQL)
 create database hospital;
 use hospital;
@@ -167,6 +169,9 @@ MODIFY Address VARCHAR(50);
 
 
 
+
+
+
 *** Practical - 3 *** (MongoDB)
 Aim : Create a document and collection in MongoDB, performing advanced queries with 
 conditional operators and aggregate functions 
@@ -249,6 +254,9 @@ db.book.find({ "Book_Details_Info.cost": { $gt:500}});
 
 
 
+
+
+
 *** Practical - 4 *** (MongoDB)
 Aim : Perform aggregation using Map() and Reduce() function in MongoDB 
 
@@ -283,6 +291,9 @@ db.restaurants.aggregate([
         }
     }
 ])
+
+
+
 
 
 
@@ -356,6 +367,9 @@ hdfs dfs -du -h /
 
 
 
+
+
+
 *** Practical - 6*** (Hadoop)
 Aim : Pig wordcount with Mapreduce
 
@@ -365,6 +379,8 @@ grunt> word_list= foreach line_list generate FLATTEN(TOKENIZE(line)) as word;
 grunt> word_gr= group word_list by word;
 grunt> word_count= foreach word_gr generate group,COUNT(word_list);
 grunt> dump word_count;
+
+
 
 
 
@@ -399,6 +415,8 @@ grunt> NonDefaulterCount = FOREACH GroupedNonDefaulters GENERATE COUNT (NonDefau
 grunt> DUMP DefaulterCount;
 grunt> LongDurationLoans = FILTER BankData BY duration > 1000;
 grunt> DUMP LongDUrationLoans;
+
+
 
 
 
@@ -451,6 +469,9 @@ Into table teacher;
 hive> drop table teacher;
 
 
+
+
+
 *** Practical - 9 ***(HBASE)
 Aim: HBASE
 
@@ -498,6 +519,9 @@ scan ‘order:customer’, {STARROW => ‘C02’, STOPROW => ‘C04’}
 
 9)	Count the total rows in the table.
 count ‘order:customer’
+
+
+
 
 
 
